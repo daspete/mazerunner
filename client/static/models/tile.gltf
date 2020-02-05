@@ -1,0 +1,120 @@
+{
+    "asset" : {
+        "generator" : "Khronos glTF Blender I/O v1.0.5",
+        "version" : "2.0"
+    },
+    "extensionsUsed" : [
+        "KHR_draco_mesh_compression"
+    ],
+    "extensionsRequired" : [
+        "KHR_draco_mesh_compression"
+    ],
+    "scene" : 0,
+    "scenes" : [
+        {
+            "name" : "Scene",
+            "nodes" : [
+                0
+            ]
+        }
+    ],
+    "nodes" : [
+        {
+            "mesh" : 0,
+            "name" : "Tile",
+            "scale" : [
+                5,
+                0.10000000149011612,
+                5
+            ]
+        }
+    ],
+    "materials" : [
+        {
+            "doubleSided" : true,
+            "name" : "TileMaterial",
+            "pbrMetallicRoughness" : {
+                "baseColorFactor" : [
+                    0.39136847853660583,
+                    0.8000000715255737,
+                    0.002988095162436366,
+                    1
+                ],
+                "metallicFactor" : 0,
+                "roughnessFactor" : 1
+            }
+        }
+    ],
+    "meshes" : [
+        {
+            "name" : "TileGeometry",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "POSITION" : 0,
+                        "NORMAL" : 1,
+                        "TEXCOORD_0" : 2
+                    },
+                    "extensions" : {
+                        "KHR_draco_mesh_compression" : {
+                            "bufferView" : 0,
+                            "attributes" : {
+                                "POSITION" : 0,
+                                "NORMAL" : 1,
+                                "TEXCOORD_0" : 2
+                            }
+                        }
+                    },
+                    "indices" : 3,
+                    "material" : 0,
+                    "mode" : 4
+                }
+            ]
+        }
+    ],
+    "accessors" : [
+        {
+            "componentType" : 5126,
+            "count" : 24,
+            "max" : [
+                1,
+                1,
+                1
+            ],
+            "min" : [
+                -1,
+                -1,
+                -1
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "componentType" : 5126,
+            "count" : 24,
+            "type" : "VEC3"
+        },
+        {
+            "componentType" : 5126,
+            "count" : 24,
+            "type" : "VEC2"
+        },
+        {
+            "componentType" : 5123,
+            "count" : 36,
+            "type" : "SCALAR"
+        }
+    ],
+    "bufferViews" : [
+        {
+            "buffer" : 0,
+            "byteLength" : 278,
+            "byteOffset" : 0
+        }
+    ],
+    "buffers" : [
+        {
+            "byteLength" : 280,
+            "uri" : "data:application/octet-stream;base64,RFJBQ08CAgEBAAACGAwCDAAA/wJmQP8CZkD/AmZACwECBQfpIgMZHQR6c+CBAAAAAAAD/wAAAAAAAQAAAQAJAwAAAgEBCQMAAQMBAwkCAAICAQEBAQIDHScBEOUIDrGm4bu6vmK0UxCy2iylAAAAAP8/AAAAAIC/AACAvwAAgL8AAABADgADAQALAwEwGwEIAQgGAAjLlW+AAAAI/AcAAAgA4P9/AID/wP//AP8DAAD/AQAACgEBAQANAwEQI60KVSUHyhJMlTJXgP/////3PwACAAD4f/8HgAAIAPwfAAAIgAD4P//vf/8HgAAIAACgAP4fAAIgAACAAOh/AAiA/wMAAAAA/w8AAAAAAD4AAAAAAACAPwwAAA=="
+        }
+    ]
+}
