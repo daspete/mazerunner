@@ -4,11 +4,11 @@ import Sleep from '../utils/Sleep'
 import MazeCell from './MazeCell'
 
 class Maze {
-    constructor(config = { width: 40, height: 50, cell: { dimension: 20 }, seed: 'DasPeTe' }){
+    constructor(config = { width: 40, height: 50, seed: 'DasPeTe' }){
         this.config = config
 
         this.cells = []
-        this.walkables = []
+        this.bridges = []
 
         this.rg = new chance(this.config.seed)
     }
@@ -16,7 +16,10 @@ class Maze {
     get Walkables(){ return this.cells.filter((cell) => { return cell.Walkable == true }) }
     get NonWalkables(){ return this.cells.filter((cell) => { return cell.Walkable == false }) }
 
-    GenerateMaze(startX, startY){
+    GenerateMaze(){
+        const startX = this.config.start.x
+        const startY = this.config.start.y
+
         this.cells = []
 
         for(let y = 0; y < this.config.height; y++){
@@ -30,52 +33,60 @@ class Maze {
 
         this.DigMaze(startX, startY)
 
-        let bridges = 16
         const cells = this.rg.shuffle([...this.Walkables])
 
-        for(let i = 0; i < bridges; i++){
-            let _cell = cells.find((__cell) => {
+        this.bridges = []
+
+        for(let i = 0; i < this.config.bridges; i++){
+            // get the next cell which has just one neighbor to build a bridge
+            let nextBridgableCell = cells.find((__cell) => {
+                // get all neighbors
                 let topNeighbor = this.GetCell(__cell.x, __cell.y - 1)
                 let bottomNeighbor = this.GetCell(__cell.x, __cell.y + 1)
                 let leftNeighbor = this.GetCell(__cell.x - 1, __cell.y)
                 let rightNeighbor = this.GetCell(__cell.x + 1, __cell.y)
 
+                // count the walkable neighbors
                 let neighbors = 0
                 if(topNeighbor && topNeighbor.Walkable) neighbors++
                 if(bottomNeighbor && bottomNeighbor.Walkable) neighbors++
                 if(leftNeighbor && leftNeighbor.Walkable) neighbors++
                 if(rightNeighbor && rightNeighbor.Walkable) neighbors++
 
+                // only get cell, when it has just one neighbor
                 if(neighbors == 1) return true
 
                 return false
             })
 
-            if(!_cell){
-                i = bridges
+            if(!nextBridgableCell){
+                i = this.config.bridges
                 break
             }
 
             
             let direction = this.rg.shuffle(['top', 'left', 'right', 'bottom'])
             
-            let cell = null
+            let bridge = null
             let run = 0
 
-            while(!cell && run < 4){
-                let x = _cell.x
-                let y = _cell.y
+            while(!bridge && run < 4){
+                let x = nextBridgableCell.x
+                let y = nextBridgableCell.y
 
-                if(direction[run] == 'top') cell = this.GetCell(x, y - 1)
-                if(direction[run] == 'bottom') cell = this.GetCell(x, y + 1)
-                if(direction[run] == 'top') cell = this.GetCell(x - 1, y)
-                if(direction[run] == 'top') cell = this.GetCell(x + 1, y)
+                if(direction[run] == 'top') bridge = this.GetCell(x, y - 1)
+                if(direction[run] == 'bottom') bridge = this.GetCell(x, y + 1)
+                if(direction[run] == 'left') bridge = this.GetCell(x - 1, y)
+                if(direction[run] == 'right') bridge = this.GetCell(x + 1, y)
 
                 run++
             }
 
-            if(!(cell && cell.Walkable)){
-                if(cell) cell.Walkable = true
+            if(!(bridge && bridge.Walkable)){
+                if(bridge){
+                    bridge.Walkable = true
+                    this.bridges.push(bridge)
+                }
             }
         }
     }
@@ -85,6 +96,7 @@ class Maze {
         
         for(let i = 0; i < directions.length; i++){
             switch(directions[i]){
+                // up
                 case 1:
                     if(y - 2 <= 0) continue
 
@@ -94,27 +106,9 @@ class Maze {
 
                         this.DigMaze(x, y - 2)
                     }
-                    break
-                case 2:
-                    if(x - 2 <= 0) continue
+                break
 
-                    if(!this.GetCell(x - 2, y).Walkable){
-                        this.GetCell(x - 2, y).Walkable = true
-                        this.GetCell(x - 1, y).Walkable = true
-
-                        this.DigMaze(x - 2, y)
-                    }
-                    break
-                case 3:
-                    if(x + 2 > this.config.width - 1) continue
-
-                    if(!this.GetCell(x + 2, y).Walkable){
-                        this.GetCell(x + 2, y).Walkable = true
-                        this.GetCell(x + 1, y).Walkable = true
-
-                        this.DigMaze(x + 2, y)
-                    }
-                    break
+                // down
                 case 4:
                     if(y + 2 > this.config.height - 1) continue
 
@@ -125,17 +119,39 @@ class Maze {
                         this.DigMaze(x, y + 2)
                     }
                 break
+                
+                // left
+                case 2:
+                    if(x - 2 <= 0) continue
+
+                    if(!this.GetCell(x - 2, y).Walkable){
+                        this.GetCell(x - 2, y).Walkable = true
+                        this.GetCell(x - 1, y).Walkable = true
+
+                        this.DigMaze(x - 2, y)
+                    }
+                break
+                
+                //right
+                case 3:
+                    if(x + 2 > this.config.width - 1) continue
+
+                    if(!this.GetCell(x + 2, y).Walkable){
+                        this.GetCell(x + 2, y).Walkable = true
+                        this.GetCell(x + 1, y).Walkable = true
+
+                        this.DigMaze(x + 2, y)
+                    }
+                break
             }
         }
     }
 
     GetCell(x, y){
-        // if(x < 1 || y < 1 || x > this.config.width - 1 || y > this.config.height - 1) return false
         return this.cells.find((cell) => {
             return cell.x == x && cell.y == y
         })
     }
-
 
 }
 

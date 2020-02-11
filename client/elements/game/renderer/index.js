@@ -67,6 +67,7 @@ class Renderer {
 
         this.models = {}
         this.modelFiles = [
+            'MazeGround',
             'walkablegreen',
             'nonwalkablebrown',
             'player',
@@ -106,11 +107,14 @@ class Renderer {
         await this.LoadModels()
 
         for(let i = 0; i < this.maze.Walkables.length; i++){
-            this.Instantiate('walkablegreen', {
+            let tile = this.Instantiate('MazeGround', {
                 x: this.maze.Walkables[i].x,
-                y: 0,
+                y: 8,
                 z: this.maze.Walkables[i].y
             })
+
+            tile.scale.x = 0.5
+            tile.scale.z = 0.5
         }
     }
 

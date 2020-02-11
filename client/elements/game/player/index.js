@@ -4,13 +4,13 @@ import Input from '../input'
 
 
 class Player {
-    constructor({ maze, renderer, position, game }){
+    constructor({ maze, renderer, position, game, config }){
         this.maze = maze
         this.renderer = renderer
         this.position = position
         this.game = game
+        this.config = config
 
-        this.moveTime = 240
         this.lastMove = new Date().getTime()
 
         this.visual = this.renderer.Instantiate('Rabbit', { x: this.position.x, y: 0, z: this.position.y })
@@ -36,9 +36,9 @@ class Player {
     }
 
     SetCameraPosition(){
-        this.renderer.camera.position.y = 50
-        this.renderer.camera.position.x = this.visual.position.x - 20
-        this.renderer.camera.position.z = this.visual.position.z + 70
+        this.renderer.camera.position.y = this.config.camera.position.y
+        this.renderer.camera.position.x = this.visual.position.x + this.config.camera.position.x
+        this.renderer.camera.position.z = this.visual.position.z + this.config.camera.position.z
         this.renderer.camera.lookAt(this.visual.position.x, 0, this.visual.position.z)
     }
 
@@ -59,15 +59,13 @@ class Player {
     }
 
     Move(){
-        if(new Date().getTime() - this.lastMove <= this.moveTime) return
+        if(new Date().getTime() - this.lastMove <= this.config.moveTime) return
         
         let direction = { x: 0, y: 0 }
 
-
         let currentMove = this.input.currentMove
         let nextMove = this.input.nextMove
-
-        
+       
         let move = null
 
         if(this.IsMovable(nextMove)){
@@ -114,7 +112,7 @@ class Player {
                 y: 2,
                 direction: 'alternate',
                 easing: 'easeOutBounce',
-                duration: this.moveTime * 0.5 - 50,
+                duration: this.config.moveTime * 0.5 - 50,
                 update: () => {
                     this.visual.position.y = jumpPosition.y
 
@@ -129,7 +127,7 @@ class Player {
             targets: position,
             x: this.position.x * this.renderer.scale,
             z: this.position.y * this.renderer.scale,
-            duration: this.moveTime - 50,
+            duration: this.config.moveTime - 50,
             easing: 'easeInOutSine',
             update: () => {
                 this.visual.position.x = position.x
@@ -142,8 +140,6 @@ class Player {
         })
 
         this.lastMove = new Date().getTime()
-
-        
     }
 
 

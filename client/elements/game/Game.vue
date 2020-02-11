@@ -14,6 +14,7 @@
 
 <script>
 import gameConfig from './config/game'
+
 import Maze from './maze'
 import Renderer from './renderer'
 import Player from './player'
@@ -31,20 +32,25 @@ export default {
     },
 
     async mounted(){
-        this.maze = new Maze(gameConfig)
-        this.maze.GenerateMaze(1, 1)
+
+        this.maze = new Maze(gameConfig.maze)
+        this.maze.GenerateMaze()
 
         this.renderer = new Renderer({ width: 1280, height: 720, container: this.$refs.game, game: this})
         await this.renderer.CreateMaze(this.maze)
 
         this.player = new Player({
             game: this,
+            config: gameConfig.player,
             maze: this.maze,
             renderer: this.renderer,
             position: { x: 1, y: 1 },
         })
 
-        this.goodies = new Goodies(this)
+        this.goodies = new Goodies({
+            game: this,
+            config: gameConfig.goodies
+        })
 
         
         this.goodies.Place()

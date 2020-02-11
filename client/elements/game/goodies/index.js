@@ -12,7 +12,7 @@ class Goodie {
         this.position = position
         this.model = model
 
-        this.scale = this.bag / 16
+        this.scale = 1
 
         this.disabled = false
         this.visual = this.renderer.Instantiate(this.model, position)
@@ -57,13 +57,12 @@ class Goodie {
 }
 
 class Goodies {
-    constructor(game){
+    constructor({ game, config }){
         this.game = game
+        this.config = config
         this.player = this.game.player
         this.renderer = this.game.renderer
         this.maze = this.game.maze
-
-        this.count = 50
 
         this.goodies = []
     }
@@ -71,12 +70,12 @@ class Goodies {
     Place(){
         console.log('PLACE GOODIES')
 
-        let shuffledWalkables = this.maze.rg.shuffle(this.maze.Walkables).filter((cell) => {
-            return cell.x != this.player.position.x && cell.y != this.player.position.z
-        })
-        shuffledWalkables = shuffledWalkables.slice(0, this.count)
-
-
+        let shuffledWalkables = this.maze.rg
+            .shuffle(this.maze.Walkables).filter((cell) => {
+                return cell.x != this.player.position.x && cell.y != this.player.position.z
+            })
+            .slice(0, this.config.count)
+        
         for(let i = 0; i < shuffledWalkables.length; i++){
             let cell = shuffledWalkables[i]
 
