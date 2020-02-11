@@ -13,7 +13,7 @@ class Player {
         this.moveTime = 240
         this.lastMove = new Date().getTime()
 
-        this.visual = this.renderer.Instantiate('player', { x: this.position.x, y: this.position.y })
+        this.visual = this.renderer.Instantiate('Rabbit', { x: this.position.x, y: 0, z: this.position.y })
         this.SetCameraPosition()
         this.input = new Input()
 
@@ -37,8 +37,8 @@ class Player {
 
     SetCameraPosition(){
         this.renderer.camera.position.y = 50
-        this.renderer.camera.position.x = this.visual.position.x - 30
-        this.renderer.camera.position.z = this.visual.position.z + 50
+        this.renderer.camera.position.x = this.visual.position.x - 20
+        this.renderer.camera.position.z = this.visual.position.z + 70
         this.renderer.camera.lookAt(this.visual.position.x, 0, this.visual.position.z)
     }
 
@@ -101,6 +101,14 @@ class Player {
         }
 
         if(direction.x != 0 || direction.y != 0){
+            let lookPosition = {
+                x: this.visual.position.x + direction.x,
+                y: 0,
+                z: this.visual.position.z + direction.y
+            }
+
+            this.visual.lookAt(lookPosition.x, 0, lookPosition.z)
+
             anime({
                 targets: jumpPosition,
                 y: 2,
@@ -112,7 +120,7 @@ class Player {
 
                     let scale = jumpPosition.y * 0.5 + 1
 
-                    this.visual.scale.y = 1 + (scale * 0.1)
+                    this.visual.scale.y = 0.8 + (scale * 0.1)
                 }  
             })
         }
@@ -127,10 +135,15 @@ class Player {
                 this.visual.position.x = position.x
                 this.visual.position.z = position.z
                 this.SetCameraPosition()
+            },
+            complete: () => {
+                this.game.goodies.Update()
             }
         })
 
         this.lastMove = new Date().getTime()
+
+        
     }
 
 

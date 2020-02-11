@@ -1,5 +1,6 @@
 <template>
     <div class="container">
+        <div style="color: white">{{ points }}</div>
         <div class="game" ref="game"></div>
         <div class="input">
             <button class="input__button input__button--left" @click="SetDirection('left')">left</button>
@@ -16,11 +17,18 @@ import gameConfig from './config/game'
 import Maze from './maze'
 import Renderer from './renderer'
 import Player from './player'
+import Goodies from './goodies'
 
 export default {
     maze: null,
     renderer: null,
     player: null,
+
+    data(){
+        return {
+            points: 0
+        }
+    },
 
     async mounted(){
         this.maze = new Maze(gameConfig)
@@ -33,18 +41,26 @@ export default {
             game: this,
             maze: this.maze,
             renderer: this.renderer,
-            position: { x: 1, y: 1 }
+            position: { x: 1, y: 1 },
         })
 
-        
+        this.goodies = new Goodies(this)
 
+        
+        this.goodies.Place()
         this.renderer.Start()
         this.player.Start()
     },
 
     methods: {
         SetDirection(direction){
+            if(!this.player) return
+            if(!this.player.input) return
             this.player.input.SetNextMove(direction)
+        },
+
+        GetPoints({ points }){
+            this.points += points
         }
     }
 }

@@ -57,8 +57,11 @@ class Renderer {
         this.dracoLoader.setDecoderPath('/libs/draco/')
         this.loader.setDRACOLoader(this.dracoLoader)
 
-        this.light = new DirectionalLight(0xffffff, 1)
+        this.light = new DirectionalLight(0xffffff, 0.9)
         this.light.position.y = 50
+        this.light.position.x = -50
+        this.light.position.z = 50
+        
         this.light.lookAt(new Vector3(0,0,0))
         this.scene.add(this.light)
 
@@ -66,7 +69,9 @@ class Renderer {
         this.modelFiles = [
             'walkablegreen',
             'nonwalkablebrown',
-            'player'
+            'player',
+            'Rabbit',
+            'Egg'
         ]
 
         this.LoadModels()
@@ -103,7 +108,8 @@ class Renderer {
         for(let i = 0; i < this.maze.Walkables.length; i++){
             this.Instantiate('walkablegreen', {
                 x: this.maze.Walkables[i].x,
-                y: this.maze.Walkables[i].y
+                y: 0,
+                z: this.maze.Walkables[i].y
             })
         }
     }
@@ -112,8 +118,8 @@ class Renderer {
         let model = this.GetModel(modelName)
 
         model.position.x = position.x * this.scale
-        model.position.y = 0
-        model.position.z = position.y * this.scale
+        model.position.y = position.y
+        model.position.z = position.z * this.scale
 
         this.scene.add(model)
 

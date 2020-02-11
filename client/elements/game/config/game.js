@@ -4,5 +4,5 @@ export default {
     cell: {
         dimension: 25
     },
-    seed: 'DasPeTe3'
+    seed: 'DasPeTe2'
 }

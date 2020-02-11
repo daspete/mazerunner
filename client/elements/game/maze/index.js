@@ -17,7 +17,6 @@ class Maze {
     get NonWalkables(){ return this.cells.filter((cell) => { return cell.Walkable == false }) }
 
     GenerateMaze(startX, startY){
-        // initialize maze field
         this.cells = []
 
         for(let y = 0; y < this.config.height; y++){
@@ -31,9 +30,53 @@ class Maze {
 
         this.DigMaze(startX, startY)
 
-        const nonWalkables = this.rg.shuffle(this.NonWalkables.filter((cell) => { return cell.x > 0 && cell.x < this.config.width - 1 && cell.y > 0 && cell.y < this.config.height - 1 }))
-        for(let i = 0; i < 30; i++){
-            nonWalkables[i].Walkable = true
+        let bridges = 16
+        const cells = this.rg.shuffle([...this.Walkables])
+
+        for(let i = 0; i < bridges; i++){
+            let _cell = cells.find((__cell) => {
+                let topNeighbor = this.GetCell(__cell.x, __cell.y - 1)
+                let bottomNeighbor = this.GetCell(__cell.x, __cell.y + 1)
+                let leftNeighbor = this.GetCell(__cell.x - 1, __cell.y)
+                let rightNeighbor = this.GetCell(__cell.x + 1, __cell.y)
+
+                let neighbors = 0
+                if(topNeighbor && topNeighbor.Walkable) neighbors++
+                if(bottomNeighbor && bottomNeighbor.Walkable) neighbors++
+                if(leftNeighbor && leftNeighbor.Walkable) neighbors++
+                if(rightNeighbor && rightNeighbor.Walkable) neighbors++
+
+                if(neighbors == 1) return true
+
+                return false
+            })
+
+            if(!_cell){
+                i = bridges
+                break
+            }
+
+            
+            let direction = this.rg.shuffle(['top', 'left', 'right', 'bottom'])
+            
+            let cell = null
+            let run = 0
+
+            while(!cell && run < 4){
+                let x = _cell.x
+                let y = _cell.y
+
+                if(direction[run] == 'top') cell = this.GetCell(x, y - 1)
+                if(direction[run] == 'bottom') cell = this.GetCell(x, y + 1)
+                if(direction[run] == 'top') cell = this.GetCell(x - 1, y)
+                if(direction[run] == 'top') cell = this.GetCell(x + 1, y)
+
+                run++
+            }
+
+            if(!(cell && cell.Walkable)){
+                if(cell) cell.Walkable = true
+            }
         }
     }
 
@@ -87,6 +130,7 @@ class Maze {
     }
 
     GetCell(x, y){
+        // if(x < 1 || y < 1 || x > this.config.width - 1 || y > this.config.height - 1) return false
         return this.cells.find((cell) => {
             return cell.x == x && cell.y == y
         })
