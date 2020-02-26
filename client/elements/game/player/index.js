@@ -13,7 +13,7 @@ class Player {
 
         this.lastMove = new Date().getTime()
 
-        this.visual = this.renderer.Instantiate('Rabbit', { x: this.position.x, y: 0, z: this.position.y })
+        this.visual = this.renderer.Instantiate('Rabbit', { x: this.position.x, y: -10, z: this.position.y })
         this.SetCameraPosition()
         this.input = new Input()
 
@@ -95,30 +95,30 @@ class Player {
         }
 
         let jumpPosition = {
-            y: 0
+            y: -10
         }
 
         if(direction.x != 0 || direction.y != 0){
             let lookPosition = {
                 x: this.visual.position.x + direction.x,
-                y: 0,
+                y: -10,
                 z: this.visual.position.z + direction.y
             }
 
-            this.visual.lookAt(lookPosition.x, 0, lookPosition.z)
+            this.visual.lookAt(lookPosition.x, -10, lookPosition.z)
 
             anime({
                 targets: jumpPosition,
-                y: 2,
+                y: -5,
                 direction: 'alternate',
                 easing: 'easeOutBounce',
                 duration: this.config.moveTime * 0.5 - 50,
                 update: () => {
                     this.visual.position.y = jumpPosition.y
 
-                    let scale = jumpPosition.y * 0.5 + 1
+                    //let scale = jumpPosition.y * 0.5 + 1
 
-                    this.visual.scale.y = 0.8 + (scale * 0.1)
+                    // this.visual.scale.y = 0.8 + (scale * 0.1)
                 }  
             })
         }

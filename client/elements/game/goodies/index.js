@@ -1,12 +1,17 @@
 import anime from 'animejs/lib/anime.es.js'
+import { Math } from 'three'
 
 class Goodie {
-    constructor({ index = 0, game = null, bag = 5, model = 'Egg', position = { x: 1, y: 1 } }){
+    constructor({ index = 0, game = null, bag = 5, model = 'MazeEgg1', position = { x: 1, y: 1 } }){
         this.index = index
         this.game = game
         this.renderer = this.game.renderer
         this.maze = this.game.maze
         this.player = this.game.player
+
+        if(this.index % 2 == 0){
+            model = 'MazeEgg2'
+        }
         
         this.bag = bag
         this.position = position
@@ -22,11 +27,27 @@ class Goodie {
     }
 
     Update(){
+        if(this.disabled) return 
+
         let playerPosition = this.player.position
 
         if(this.position.x == playerPosition.x && this.position.z == playerPosition.y){
             if(!this.disabled) this.Catch()
         }
+
+        let tween = {
+            rotation: 0
+        }
+
+        anime({
+            targets: tween,
+            rotation: 90,
+            duration: this.player.config.moveTime,
+            update: () => {
+                if(this.disabled) return
+                this.visual.rotateY(Math.degToRad(1))
+            }
+        })
        
     }
 
@@ -42,7 +63,7 @@ class Goodie {
         anime({
             targets: tween,
             y: 25,
-            scale: 0,
+            scale: 0.01,
             duration: 600,
             easing: 'easeOutElastic',
             update: () => {
@@ -50,6 +71,9 @@ class Goodie {
                 this.visual.scale.x = tween.scale
                 this.visual.scale.y = tween.scale
                 this.visual.scale.z = tween.scale
+            },
+            complete: () => {
+                this.renderer.scene.remove(this.visual)
             }
         })
 
@@ -103,7 +127,7 @@ class Goodies {
                 bag: bag,
                 position: {
                     x: cell.x,
-                    y: 15,
+                    y: 0,
                     z: cell.y
                 }
             }))
